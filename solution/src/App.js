@@ -1,39 +1,41 @@
-import { useState } from "react";
-import FormComponent from "./components/form/FormComponent";
+import "./App.css";
 import Contacts from "./components/contacts/Contacts";
-import { addInfo, updateInfo } from "./utils/functions";
-import "./utils/firebase";
+import FormComponent from "./components/form/FormComponent";
+import { useState } from "react"
+import { AddUser, UpdateUser } from "./utils/functions"
+import { ToastContainer } from "react-toastify";
 
 const initialValues = {
     username: "",
     phoneNumber: "",
-    gender: "",
-};
-
+    gender: ""
+}
 function App() {
-    const [info, setInfo] = useState(initialValues);
+    const [info, setInfo] = useState(initialValues)
+    const [isAdd, setIsAdd] = useState("ADD")
 
-    const handleFormSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         if (info.id) {
-            updateInfo(info);
-        } else {
-            addInfo(info);
+            UpdateUser(info)
         }
-        setInfo(initialValues);
-    };
+        else {
+            AddUser(info)
+        }
+        setInfo(initialValues)
+        setIsAdd("ADD")
+    }
 
-    const handleEdit = (id, username, phoneNumber, gender) => {
-        setInfo({ id, username, phoneNumber, gender });
-    };
+    const editUser = (id, username, phoneNumber, gender) => {
+        setIsAdd("UPDATE")
+        setInfo({ id, username, phoneNumber, gender })
+    }
 
     return (
         <div className="App">
-            <FormComponent
-                info={info}
-                setInfo={setInfo}
-                handleFormSubmit={handleFormSubmit}
-            />
-            <Contacts handleEdit={handleEdit} />
+            <FormComponent info={info} setInfo={setInfo} handleSubmit={handleSubmit} isAdd={isAdd} />
+            <Contacts editUser={editUser} />
+            <ToastContainer />
         </div>
     );
 }

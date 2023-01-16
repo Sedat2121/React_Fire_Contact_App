@@ -1,45 +1,80 @@
-import { useFetch, deleteInfo } from '../../utils/functions';
-import { Icon, Table } from "semantic-ui-react";
+import React from "react";
+import {
+    Table,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableBody,
+    Paper,
+} from "@mui/material";
 
+import { useFetch, DeleteUser } from "../../utils/functions";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
-const Contacts = ({ handleEdit }) => {
+const Contacts = ({ editUser }) => {
     const { isLoading, contactList } = useFetch();
-
     return (
         <div>
             <h2 className="contact-header">Contacts</h2>
-            <Table size='large' className="table">
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell textAlign="center">Username</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center">Phone Number</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center">Gender</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center">Delete</Table.HeaderCell>
-                        <Table.HeaderCell textAlign="center">Edit</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {contactList?.map((item, index) => (
-                        <Table.Row key={index}>
-                            <Table.Cell textAlign="center">
-                                {item.username}
-                            </Table.Cell>
-                            <Table.Cell textAlign="center">
-                                {item.phoneNumber}
-                            </Table.Cell>
-                            <Table.Cell textAlign="center">
-                                {item.gender}
-                            </Table.Cell>
-                            <Table.Cell textAlign="center" className="delete" onClick={() => deleteInfo(item.id)}>
-                                <Icon name="delete" />
-                            </Table.Cell>
-                            <Table.Cell textAlign="center" className="edit" onClick={() => handleEdit(item.id, item.username, item.phoneNumber, item.gender)}>
-                                <Icon name="edit" />
-                            </Table.Cell>
-                        </Table.Row>
-                    ))}
-                </Table.Body>
-            </Table>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Username</TableCell>
+                            <TableCell align="left">Phone Number</TableCell>
+                            <TableCell align="left">Gender</TableCell>
+                            <TableCell align="left">Delete</TableCell>
+                            <TableCell align="left">Edit</TableCell>
+                        </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                        {
+                            // Bilgiler gelmediği durumda Loading yazısı görünsün
+                            isLoading ? (
+                                <TableRow
+                                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                                >
+                                    <TableCell colSpan={5} align="center">
+                                        Loading
+                                    </TableCell>
+                                </TableRow>
+                            ) : contactList?.lenght === 0 ? (
+                                // Bilgiler olmadığı,boş olduğu  durumda veri bulunamadı mesajı
+                                <TableRow
+                                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                                >
+                                    <TableCell colSpan={5} align="center">
+                                        No Result Found
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                // Bilgiler geldiği zaman aşağıya yazılacak kodlar çalışsın
+                                contactList?.map((item, index) => (
+                                    <TableRow>
+                                        <TableCell align="center">{item.username} </TableCell>
+                                        <TableCell align="center">{item.phoneNumber} </TableCell>
+                                        <TableCell align="center">{item.gender} </TableCell>
+                                        <TableCell align="center" onClick={() => DeleteUser(item.id)}>
+                                            <DeleteIcon />
+                                        </TableCell>
+                                        <TableCell align="center" onClick={() => editUser(
+                                            item.id,
+                                            item.username,
+                                            item.phoneNumber,
+                                            item.gender
+                                        )}>
+                                            <EditIcon />
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
     );
 };

@@ -1,60 +1,67 @@
-import { useState, useEffect } from "react";
+// ADD USER
 
 import {
     getDatabase,
     ref,
-    push,
     set,
+    push,
     onValue,
-    query,
     remove,
     update,
 } from "firebase/database";
 
-// Add a Contact
-export const addInfo = (info) => {
-    const db = getDatabase();
-    const dbRef = ref(db, "contact");
-    const contactRef = push(dbRef);
-    set(contactRef, {
+import firebase from "./firebase";
+import { useState, useEffect } from "react";
+import Toastify from "./toastify";
+
+export const AddUser = (info) => {
+    const db = getDatabase(firebase);
+    const userRef = ref(db, "user/");
+    const newUserRef = push(userRef);
+
+    set(newUserRef, {
         username: info.username,
         phoneNumber: info.phoneNumber,
         gender: info.gender,
     });
 };
 
-// Fetch Contatcs
+// READ INFO
 export const useFetch = () => {
+    const [isLoading, setIsLoading] = useState(true);
     const [contactList, setContactList] = useState();
-    const [isLoading, setIsLoading] = useState(false);
-
     useEffect(() => {
-        setIsLoading(true);
-        const db = getDatabase();
-        const dbRef = ref(db, "contact");
-        onValue(query(dbRef), (snapshot) => {
-            const contacts = snapshot.val();
-            const contactArray = [];
-            for (let id in contacts) {
-                contactArray.push({ id, ...contacts[id] });
+        const db = getDatabase(firebase);
+        const userRef = ref(db, "user/");
+
+        onValue(userRef, (snapshot) => {
+            const data = snapshot.val();
+            const userArray = [];
+
+            for (let id in data) {
+                userArray.push({ id, ...data[id] });
             }
-            setContactList(contactArray);
+            setContactList(userArray);
             setIsLoading(false);
         });
     }, []);
     return { isLoading, contactList };
 };
-// Delete a Contact
-export const deleteInfo = (id) => {
-    const db = getDatabase();
-    const dbRef = ref(db, "contact/" + id);
-    remove(dbRef);
+
+export const DeleteUser = (id) => {
+    const db = getDatabase(firebase);
+    // const userRef=ref(db,"user/")
+    remove(ref(db, "user/" + id));
+    Toastify("Deleted Successfully");
 };
 
-// Update a Contact
-export const updateInfo = (info) => {
-    const db = getDatabase();
+export const UpdateUser = (info) => {
+    const db = getDatabase(firebase);
+    const userRef = ref(db, "user/");
+
     const updates = {};
-    updates["contact/" + info.id] = info;
+
+    updates["user/" + info.id] = info;
+
     return update(ref(db), updates);
 };
