@@ -9,12 +9,12 @@ import {
     remove,
     update,
 } from "firebase/database";
-
 import firebase from "./firebase";
 import { useState, useEffect } from "react";
 import Toastify from "./toastify";
 
 export const AddUser = (info) => {
+    Toastify("Added Successfully");
     const db = getDatabase(firebase);
     const userRef = ref(db, "user/");
     const newUserRef = push(userRef);
@@ -56,12 +56,10 @@ export const DeleteUser = (id) => {
 };
 
 export const UpdateUser = (info) => {
+    Toastify("Updated Successfully");
     const db = getDatabase(firebase);
-    const userRef = ref(db, "user/");
-
+    // const userRef = ref(db, "user/");
     const updates = {};
-
     updates["user/" + info.id] = info;
-
     return update(ref(db), updates);
 };
