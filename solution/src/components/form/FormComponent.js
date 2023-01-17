@@ -34,12 +34,12 @@ const FormComponent = ({ info, setInfo, handleSubmit, isAdd }) => {
             <p className="contact-header">
                 <div>
                     <a
-                        href="https://clarusway.com/"
+                        href="https://my-portfolio-app-rouge.vercel.app/index.html#home"
                         className="design"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <code>{"<Clarusway/> "}</code>
+                        <code>{"<Londoners/> "}</code>
                     </a>
                 </div>
                 <span className="design header">design</span>
